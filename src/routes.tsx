@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Spinner from './components/Spinner';
 import Layout from './components/Layout';
 
@@ -35,24 +35,27 @@ const SettingsLayout = () => (
 
 export default function AppRoutes() {
   return (
-    <ErrorBoundary>
-      <Suspense fallback={<Spinner />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
+    // Wrap the entire routing in BrowserRouter with the correct base path
+    <BrowserRouter basename="/Finances/">
+      <ErrorBoundary>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route path="settings" element={<SettingsLayout />}>
-            <Route index element={<Settings onUnlock={function (): void {
+            <Route path="settings" element={<SettingsLayout />}>
+              <Route index element={<Settings onUnlock={function (): void {
+                throw new Error('Function not implemented.');
+              } } />} />
+            </Route>
+
+            <Route path="profile" element={<Profile onUnlock={function (): void {
               throw new Error('Function not implemented.');
             } } />} />
-          </Route>
 
-          <Route path="profile" element={<Profile onUnlock={function (): void {
-            throw new Error('Function not implemented.');
-          } } />} />
-
-          <Route path="*" element={<div className="p-6 text-center text-lg">Page not found</div>} />
-        </Routes>
-      </Suspense>
-    </ErrorBoundary>
+            <Route path="*" element={<div className="p-6 text-center text-lg">Page not found</div>} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    </BrowserRouter>
   );
 }

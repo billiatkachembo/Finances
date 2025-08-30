@@ -19,17 +19,16 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: false,
-    chunkSizeWarningLimit: 2000,
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Put React and ReactDOM in their own chunk
             if (id.includes('react-dom') || id.includes('react')) {
               return 'react';
             }
-            if (id.includes('recharts') || id.includes('react-chartjs-2') || id.includes('chart.js')) {
-              return 'charts';
-            }
+            // Put other libraries in the vendor chunk
             return 'vendor';
           }
         },
