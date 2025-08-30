@@ -2,40 +2,62 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-// https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Base path for GitHub Pages
   base: "/Finances/",
+  
   server: {
     host: "::",
     port: 8080,
   },
-  headers: {
-    // Correctly allow unsafe-eval for trusted scripts
-    'Content-Security-Policy': "script-src 'self' 'unsafe-eval' https://apis.google.com https://www.gstatic.com;"
-  },
+
   plugins: [
     react(),
   ],
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
   build: {
-    // Disable sourcemaps to hide eval() warning from gapi-script
+    outDir: "dist",
     sourcemap: false,
     chunkSizeWarningLimit: 1500,
+    cssCodeSplit: true,
     rollupOptions: {
+      // Ignore eval warnings for gapi-script
+      onwarn(warning, defaultHandler) {
+        if (warning.code === "EVAL" && warning.id && warning.id.includes("gapi-script")) {
+          return;
+        }
+        defaultHandler(warning);
+      },
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react-dom') || id.includes('react')) {
-              return 'react';
-            }
-            return 'vendor';
+        // Code splitting: vendor chunk
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+            return "assets/css/[name]-[hash][extname]";
           }
+          return "assets/[name]-[hash][extname]";
         },
       },
     },
+  },
+
+  css: {
+    postcss: "./postcss.config.js",
+    modules: {
+      localsConvention: "camelCase",
+    },
+  },
+
+  esbuild: {
+    legalComments: "none",
+    treeShaking: true,
   },
 }));
