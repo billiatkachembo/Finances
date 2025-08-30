@@ -1,4 +1,5 @@
-import React, { lazy, Suspense } from 'react';
+import * as React from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Spinner from './components/Spinner';
 import Layout from './components/Layout';
@@ -15,7 +16,7 @@ const ErrorFallback = () => (
   </div>
 );
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+class ErrorBoundary extends React.Component<React.PropsWithChildren, { hasError: boolean }> {
   state = { hasError: false };
   static getDerivedStateFromError() {
     return { hasError: true };
@@ -35,7 +36,6 @@ const SettingsLayout = () => (
 
 export default function AppRoutes() {
   return (
-    // Wrap the entire routing in BrowserRouter with the correct base path
     <BrowserRouter basename="/Finances/">
       <ErrorBoundary>
         <Suspense fallback={<Spinner />}>
@@ -43,14 +43,10 @@ export default function AppRoutes() {
             <Route path="/" element={<Home />} />
 
             <Route path="settings" element={<SettingsLayout />}>
-              <Route index element={<Settings onUnlock={function (): void {
-                throw new Error('Function not implemented.');
-              } } />} />
+              <Route index element={<Settings />} />
             </Route>
 
-            <Route path="profile" element={<Profile onUnlock={function (): void {
-              throw new Error('Function not implemented.');
-            } } />} />
+            <Route path="profile" element={<Profile />} />
 
             <Route path="*" element={<div className="p-6 text-center text-lg">Page not found</div>} />
           </Routes>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 // Define the type for the theme and the context value
 type Theme = 'dark' | 'light' | 'system';

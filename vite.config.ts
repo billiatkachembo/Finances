@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
   },
   headers: {
     // Correctly allow unsafe-eval for trusted scripts
-    'Content-Security-Policy': "script-src 'self' 'unsafe-eval' 'eval' https://apis.google.com https://www.gstatic.com;"
+    'Content-Security-Policy': "script-src 'self' 'unsafe-eval' https://apis.google.com https://www.gstatic.com;"
   },
   plugins: [
     react(),
