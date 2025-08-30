@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { create, all } from 'mathjs';
 import {
   Select,
   SelectContent,
@@ -109,26 +110,29 @@ export const IncomeForm: React.FC<IncomeFormProps> = ({ onSubmit }) => {
     toast({ title: 'Success', description: 'Income added successfully!', variant: 'default' });
   };
 
-  const handleCalcInput = (char: string) => {
-    if (char === '=') {
-      try {
-        const result = eval(calcExpression || formData.amount.toString());
-        handleInputChange('amount', parseFloat(result.toString()));
-        setCalcExpression('');
-        setIsCalculatorOpen(false);
-      } catch {
-        toast({ title: 'Error', description: 'Invalid calculation', variant: 'destructive' });
-      }
-    } else if (char === 'C') {
-      setCalcExpression('');
-    } else if (char === 'DEL') {
-      setCalcExpression(prev => prev.slice(0, -1));
-    } else {
-      setCalcExpression(prev => prev + char);
-    }
-  };
 
-  useEffect(() => {
+
+const math = create(all, {});
+
+// ... inside your component
+const handleCalcInput = (char: string) => {
+  if (char === '=') {
+    try {
+      const result = math.evaluate(calcExpression || formData.amount.toString());
+      handleInputChange('amount', parseFloat(result.toString()));
+      setCalcExpression('');
+      setIsCalculatorOpen(false);
+    } catch {
+      toast({ title: 'Error', description: 'Invalid calculation', variant: 'destructive' });
+    }
+  } else if (char === 'C') {
+    setCalcExpression('');
+  } else if (char === 'DEL') {
+    setCalcExpression(prev => prev.slice(0, -1));
+  } else {
+    setCalcExpression(prev => prev + char);
+  }
+};  useEffect(() => {
     if (!isCalculatorOpen) return;
     const handleKey = (e: KeyboardEvent) => {
       if ((e.key >= '0' && e.key <= '9') || ['+', '-', '*', '/', '.'].includes(e.key)) handleCalcInput(e.key);

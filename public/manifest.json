@@ -1,13 +1,13 @@
 {
   "name": "Money Manager",
   "short_name": "MoneyManager",
-  "start_url": "/",
+  "start_url": "/Finances/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2ecc71",
   "icons": [
     {
-      "src": "/favicon.jpeg",
+      "src": "/Finances/favicon.jpeg",
       "sizes": "192x192",
       "type": "image/jpeg"
     }

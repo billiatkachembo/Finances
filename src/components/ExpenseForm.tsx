@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { create, all } from 'mathjs';
+
 import {
   Select,
   SelectContent,
@@ -63,25 +65,30 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({ onSubmit }) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleCalcInput = (char: string) => {
-    if (char === '=') {
-      try {
-        const result = eval(calcExpression || formData.amount.toString());
-        handleInputChange('amount', parseFloat(result.toString()));
-        setCalcExpression('');
-        setIsCalculatorOpen(false);
-      } catch {
-        toast({ title: t('error') || 'Error', description: t('invalidCalculation') || 'Invalid calculation', variant: 'destructive' });
-      }
-    } else if (char === 'C') {
-      setCalcExpression('');
-    } else if (char === 'DEL') {
-      setCalcExpression(prev => prev.slice(0, -1));
-    } else {
-      setCalcExpression(prev => prev + char);
-    }
-  };
 
+// Create a math instance with all functions and constants
+const math = create(all, {});
+
+// ... inside your component
+const handleCalcInput = (char: string) => {
+  if (char === '=') {
+    try {
+      // Use math.evaluate() instead of eval()
+      const result = math.evaluate(calcExpression || formData.amount.toString());
+      handleInputChange('amount', parseFloat(result.toString()));
+      setCalcExpression('');
+      setIsCalculatorOpen(false);
+    } catch {
+      toast({ title: 'Error', description: 'Invalid calculation', variant: 'destructive' });
+    }
+  } else if (char === 'C') {
+    setCalcExpression('');
+  } else if (char === 'DEL') {
+    setCalcExpression(prev => prev.slice(0, -1));
+  } else {
+    setCalcExpression(prev => prev + char);
+  }
+};
   useEffect(() => {
     if (!isCalculatorOpen) return;
     const handleKey = (e: KeyboardEvent) => {
